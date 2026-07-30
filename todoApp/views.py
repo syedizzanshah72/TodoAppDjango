@@ -6,7 +6,7 @@ from django.contrib.auth import login ,logout,authenticate
 from .forms import todoForm
 from .models import TodoModel
 # Create your views here.
-
+@login_required
 def todo(request):
     if request.method == "POST":
         form = todoForm(request.POST)
@@ -15,6 +15,7 @@ def todo(request):
             # user.set_password(form.cleaned_data['password1'])
             todo_obj.user = request.user
             todo_obj.save()
+            form = todoForm()
             # login(request,user)
     else:
             form = todoForm()
@@ -36,6 +37,9 @@ def Registration(request):
             form = UserRegistrationform()
     return render(request,"Registration/register.html",{'form':form})
 
+def display(request):
+    data = TodoModel.objects.all()
+    return render('request','todo.html',{'data':data})
 
 
 # def login(request):

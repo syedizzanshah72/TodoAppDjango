@@ -11,5 +11,7 @@ class TodoModel(models.Model):
     description = models.TextField(max_length=1000)
     due_date = models.DateTimeField()
     priority = models.TextField(max_length=1,choices=choice)
+    def __str__(self):
+        return self.tasktitle
 
   
