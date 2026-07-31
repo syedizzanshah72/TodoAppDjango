@@ -2,18 +2,53 @@
 {% block title %}
 todoApp 
 {% endblock title %}
-{% block content %}
-<form method = "POST" enctype ="multipart/form-data" class = "form">
-    {% csrf_token %}
-    {{form.as_p}}
-<button type="submit" class = "btn btn-success">Submit</button>
-</form>
-{% comment %} <p>your tasks are </p>
-{% for d in data  %}
-<h2>{{d.description}}</h2>
 
-{% endfor %} {% endcomment %}
-<form method ="post" action="{% url 'logout' %}" >
+{% block content %}
+
+<!-- CREATE TASK FORM -->
+<form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-<button class = "btn btn-danger">Logout</a>
+    {{ form.as_p }}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <button type="submit" class="btn btn-success w-100">Submit</button>
+        </div>
+    </div>
+</form>
+
+<br>
+<h4>Your tasks are:</h4>
+
+<!-- TASK LIST -->
+{% if data %}
+    {% for d in data %}
+        <div style="margin: 15px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+            <h6 style="{% if d.completed %}color:#999; opacity:0.6;{% endif %}">
+                    [completed={{ d.completed }}] {{ d.description }}
+                {% comment %} {{ d.description }} {% endcomment %}
+            </h6>
+            
+            {% if not d.completed %}
+                <a href="{% url 'complete' d.id %}" class="btn btn-success btn-sm">✓ Complete</a>
+            {% else %}
+                <span class="badge bg-success">Done</span>
+            {% endif %}
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No tasks found</p>
+{% endif %}
+
+<br>
+
+<!-- LOGOUT FORM -->
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger w-100">Logout</button>
+        </form>
+    </div>
+</div>
+
 {% endblock content %}

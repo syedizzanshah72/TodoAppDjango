@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationform
 from django.contrib.auth import login ,logout,authenticate
@@ -19,7 +19,8 @@ def todo(request):
             # login(request,user)
     else:
             form = todoForm()
-    return render(request,"todo.html",{'form':form})
+    data = TodoModel.objects.filter(user=request.user) 
+    return render(request,"todo.html",{'form':form,'data':data})
 
 
 
@@ -37,9 +38,18 @@ def Registration(request):
             form = UserRegistrationform()
     return render(request,"Registration/register.html",{'form':form})
 
-def display(request):
-    data = TodoModel.objects.all()
-    return render('request','todo.html',{'data':data})
+def complete(request,id):
+     task = TodoModel.objects.get(pk=id,user = request.user)
+     task.completed = True
+     task.save()
+     return redirect('todo')
+
+     
+
+# @login_required(login_url='login')
+# def display(request):
+#     data = TodoModel.objects.filter(user=request.user) 
+#     return render(request,'todo.html',{'data':data})
 
 
 # def login(request):
